@@ -1,0 +1,16 @@
+# Compiled binary
+/essen
+/essen.exe
+
+# Subagent artifacts
+.pi-subagents/
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
