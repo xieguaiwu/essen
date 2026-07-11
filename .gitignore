@@ -11,6 +11,9 @@
 *.swp
 *.swo
 
+# Agent session context (not for collaborators)
+session.md
+
 # OS
 .DS_Store
 Thumbs.db
