@@ -53,13 +53,16 @@ type chatResponse struct {
 // brand is optional (empty string ok).
 // cfg must have a resolvable API key (required only for the LLM fallback).
 func Lookup(food string, brand string, amount string, cfg config.LLMConfig) (*NutritionResult, error) {
-	// 1. Try fatsecret.cn first (data is per serving, no scaling needed).
+	// 1. Try fatsecret.cn first (data is per serving).
 	result, err := fatsecretLookup(food, brand)
 	if err != nil {
 		// Non-fatal: log warning and continue to next source.
 		fmt.Fprintf(os.Stderr, "警告: fatsecret.cn 查询失败: %v，尝试 OpenFoodFacts\n", err)
 	}
 	if result != nil {
+		// Scale by count when user specifies discrete quantities (e.g. "6个" => ×6).
+		// fatsecret returns per-serving data, but the user may eat multiple items.
+		scaleFatsecretResult(result, amount)
 		result.Notes = "fatsecret.cn | " + result.Notes
 		return result, nil
 	}
@@ -174,6 +177,42 @@ func llmLookup(food string, brand string, amount string, cfg config.LLMConfig) (
 	}
 
 	return &result, nil
+}
+
+// countUnits are units that represent discrete countable items.
+// When a user specifies e.g. "6个", fatsecret's per-serving data should
+// be multiplied by 6 (assuming 1 serving = 1 item).
+var countUnits = []string{"个", "串", "只", "块", "片", "条", "粒", "颗", "枚", "根", "支"}
+
+// scaleFatsecretResult multiplies nutrition values when the amount
+// specifies a discrete count (e.g., "6个羊肉串" => ×6).
+//
+// fatsecret returns data per serving, but the serving unit may be "1个"
+// while the user ate "6个". Weight/volume units (g, ml) cannot be safely
+// scaled without knowing fatsecret's serving weight, so they are left as-is.
+func scaleFatsecretResult(result *NutritionResult, amount string) {
+	n := extractNumber(amount)
+	if n <= 1 {
+		return // 0 or 1 serving => nothing to scale
+	}
+
+	// Only scale for count-based units.
+	hasCountUnit := false
+	for _, u := range countUnits {
+		if strings.Contains(amount, u) {
+			hasCountUnit = true
+			break
+		}
+	}
+	if !hasCountUnit {
+		return // weight/volume unit => can't scale without serving weight
+	}
+
+	result.CaloriesKcal *= n
+	result.ProteinG *= n
+	result.FatG *= n
+	result.CarbsG *= n
+	result.Notes += fmt.Sprintf(" (×%.0f)", n)
 }
 
 // extractJSON attempts to pull a valid JSON object out of an LLM response

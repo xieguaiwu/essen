@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"essen/internal/body"
 	"essen/internal/config"
 	"essen/internal/models"
 	"essen/internal/nutrition"
@@ -92,6 +93,8 @@ func main() {
 		cmdToday()
 	case "config":
 		cmdConfig(os.Args[2:])
+	case "weight":
+		cmdWeight(os.Args[2:])
 	case "help", "-h", "--help":
 		usage()
 	default:
@@ -114,6 +117,7 @@ func usage() {
   %s delete <序号> [--date YYYY-MM-DD]         删除饮食记录
   %s stats [--date YYYY-MM-DD] [--week]        查看统计与目标进度
   %s config [选项...]                           查看/设置 LLM 配置
+  %s weight [kg] [--list] [--xiaomi] [--config] 体重体测管理
 
 编辑选项:
   --brand, --food, --amount, --calories, --protein, --fat, --carbs, --notes
@@ -121,10 +125,11 @@ func usage() {
 
 配置选项:
   --llm-provider, --llm-model, --base-url, --api-key
+  --xiaomi-user-id, --xiaomi-password, --height, --birth-date, --gender
 
 数据存储: ~/.local/share/essen/
 配置文件: ~/.config/essen/config.json
-`, exe, exe, exe, exe, exe, exe, exe)
+`, exe, exe, exe, exe, exe, exe, exe, exe)
 }
 
 // ---------------------------------------------------------------------------
@@ -674,6 +679,11 @@ func cmdConfig(args []string) {
 	apiKey := fs.String("api-key", "", "API Key (支持 env:VAR 格式)")
 	caloriesGoal := fs.Float64("calories-goal", 0, "每日热量目标 (kcal)")
 	proteinGoal := fs.Float64("protein-goal", 0, "每日蛋白质目标 (g)")
+	xiaomiUserID := fs.String("xiaomi-user-id", "", "小米账号 (邮箱或手机号)")
+	xiaomiPwd := fs.String("xiaomi-password", "", "小米密码 (支持 env:VAR 格式)")
+	height := fs.Float64("height", 0, "身高 (cm)")
+	birthDate := fs.String("birth-date", "", "出生日期 (YYYY-MM-DD)")
+	gender := fs.String("gender", "", "性别 (male/female)")
 
 	fs.Usage = func() {
 		fmt.Fprintf(os.Stderr, "用法: essen config [--llm-provider P --llm-model M --base-url URL --api-key KEY --calories-goal N --protein-goal N]\n")
@@ -711,6 +721,25 @@ func cmdConfig(args []string) {
 		if setFlags["protein-goal"] && *proteinGoal >= 0 {
 			cfg.Targets.ProteinGoal = *proteinGoal
 		}
+		if setFlags["xiaomi-user-id"] {
+			cfg.Body.Scale.XiaomiUserID = *xiaomiUserID
+		}
+		if setFlags["xiaomi-password"] {
+			cfg.Body.Scale.XiaomiPassword = *xiaomiPwd
+		}
+		if setFlags["height"] && *height > 0 {
+			cfg.Body.HeightCm = *height
+		}
+		if setFlags["birth-date"] {
+			cfg.Body.BirthDate = *birthDate
+		}
+		if setFlags["gender"] {
+			cfg.Body.Gender = *gender
+		}
+		// Enable Xiaomi provider when credentials are set
+		if setFlags["xiaomi-user-id"] || setFlags["xiaomi-password"] {
+			cfg.Body.Scale.Provider = "xiaomi"
+		}
 
 		if err := config.Save(cfg); err != nil {
 			fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
@@ -728,6 +757,202 @@ func cmdConfig(args []string) {
 	fmt.Printf("\n%s目标配置:%s\n", ansi(cBold), ansi(cReset))
 	fmt.Printf("  每日热量:   %.0f kcal\n", cfg.Targets.CaloriesGoal)
 	fmt.Printf("  每日蛋白质: %.0f g\n", cfg.Targets.ProteinGoal)
+
+	fmt.Printf("\n%s身体指标配置:%s\n", ansi(cBold), ansi(cReset))
+	heightDisplay := fmt.Sprintf("%.0f", cfg.Body.HeightCm)
+	if cfg.Body.HeightCm <= 0 {
+		heightDisplay = "(未设置)"
+	}
+	fmt.Printf("  身高:     %s cm\n", heightDisplay)
+	bd := cfg.Body.BirthDate
+	if bd == "" {
+		bd = "(未设置)"
+	}
+	fmt.Printf("  出生日期: %s\n", bd)
+	fmt.Printf("  性别:     %s\n", cfg.Body.Gender)
+
+	fmt.Printf("\n%s智能秤配置:%s\n", ansi(cBold), ansi(cReset))
+	if cfg.Body.Scale.Provider == "xiaomi" {
+		fmt.Printf("  提供商:   小米 (已配置)\n")
+		fmt.Printf("  账号:     %s\n", maskMiddle(cfg.Body.Scale.XiaomiUserID))
+		fmt.Printf("  密码:     %s\n", maskAPIKey(cfg.Body.Scale.XiaomiPassword))
+	} else {
+		fmt.Printf("  提供商:   (未配置)\n")
+		fmt.Printf("  提示: essen config --xiaomi-user-id USER --xiaomi-password PASS\n")
+	}
+}
+
+// ---------------------------------------------------------------------------
+// weight
+// ---------------------------------------------------------------------------
+
+func cmdWeight(args []string) {
+	fs := flag.NewFlagSet("weight", flag.ExitOnError)
+	list := fs.Bool("list", false, "列出所有体测记录")
+	xiaomi := fs.Bool("xiaomi", false, "从小米云导入体测数据")
+	wcfg := fs.Bool("config", false, "设置小米账号(同 essen config --xiaomi-*)")
+
+	fs.Usage = func() {
+		fmt.Fprintf(os.Stderr, "用法: essen weight [kg] [--list] [--xiaomi] [--config]\n")
+	}
+
+	pos, flagArgs := splitArgs(args)
+	fs.Parse(flagArgs)
+
+	if *wcfg {
+		cmdConfig([]string{"--help"})
+		return
+	}
+
+	if *xiaomi {
+		cmdWeightXiaomi()
+		return
+	}
+
+	if len(pos) > 0 {
+		weight, err := strconv.ParseFloat(pos[0], 64)
+		if err != nil || weight <= 0 || weight > 500 {
+			fmt.Fprintf(os.Stderr, "%s错误:%s 无效体重值: %s (请输入数字，如 72.5)\n", ansi(cRed), ansi(cReset), pos[0])
+			os.Exit(1)
+		}
+		if err := body.AddManual(weight); err != nil {
+			fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
+			os.Exit(1)
+		}
+		fmt.Printf("%s✓%s 已记录体重: %.1f kg\n", ansi(cGreen), ansi(cReset), weight)
+		return
+	}
+
+	if *list || (!*xiaomi && !*wcfg && len(pos) == 0) {
+		cmdWeightList()
+		return
+	}
+}
+
+func cmdWeightXiaomi() {
+	cfg, err := config.Load()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
+		os.Exit(1)
+	}
+
+	userID := config.ResolveAPIKey(cfg.Body.Scale.XiaomiUserID)
+	password := config.ResolveAPIKey(cfg.Body.Scale.XiaomiPassword)
+
+	if cfg.Body.Scale.Provider != "xiaomi" || userID == "" || password == "" {
+		fmt.Fprintf(os.Stderr, "%s小米账号未配置。请先运行:%s\n", ansi(cYellow), ansi(cReset))
+		fmt.Fprintf(os.Stderr, "  essen config --xiaomi-user-id YOUR_ACCOUNT --xiaomi-password env:XIAOMI_PASS\n")
+		os.Exit(1)
+	}
+
+	fmt.Printf("正在从小米云同步体测数据...\n")
+	fetched, err := body.FetchXiaomi(userID, password)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
+		os.Exit(1)
+	}
+
+	if len(fetched) == 0 {
+		fmt.Println("未找到体测记录")
+		return
+	}
+
+	existing, err := body.LoadMeasurements()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
+		os.Exit(1)
+	}
+
+	merged := body.MergeMeasurements(existing, fetched)
+	if err := body.SaveMeasurements(merged); err != nil {
+		fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
+		os.Exit(1)
+	}
+
+	newCount := len(merged) - len(existing)
+	fmt.Printf("%s✓%s 已从小米云导入 %d 条记录 (新增 %d 条)\n",
+		ansi(cGreen), ansi(cReset), len(fetched), newCount)
+
+	latest := merged[len(merged)-1]
+	fmt.Printf("\n最新: %.1f kg", latest.WeightKg)
+	if latest.BodyFatPct > 0 {
+		fmt.Printf(" | 体脂: %.1f%%", latest.BodyFatPct)
+	}
+	if latest.MuscleMassKg > 0 {
+		fmt.Printf(" | 肌肉: %.1f kg", latest.MuscleMassKg)
+	}
+	fmt.Println()
+}
+
+func cmdWeightList() {
+	measurements, trend, err := body.ListMeasurements()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s错误:%s %v\n", ansi(cRed), ansi(cReset), err)
+		os.Exit(1)
+	}
+
+	if len(measurements) == 0 {
+		fmt.Printf("%s暂无体测记录。%s\n", ansi(cDim), ansi(cReset))
+		fmt.Println("用法: essen weight 72.5  (手动记录体重)")
+		fmt.Println("      essen weight --xiaomi (从小米云导入)")
+		return
+	}
+
+	fmt.Printf("\n%s📊 体测记录 (%d 条)%s\n", ansi(cBold), trend.Count, ansi(cReset))
+	fmt.Printf("  %s范围: %s ~ %s%s\n", ansi(cDim), trend.FirstDate, trend.LastDate, ansi(cReset))
+	fmt.Println()
+
+	fmt.Printf("  %s%-12s %8s %8s %8s %8s %6s%s\n",
+		ansi(cBold), "日期", "体重", "体脂", "肌肉", "骨骼", "来源", ansi(cReset))
+
+	show := measurements
+	if len(show) > 14 {
+		show = show[len(show)-14:]
+	}
+
+	for _, m := range show {
+		fatStr := "-"
+		if m.BodyFatPct > 0 {
+			fatStr = fmt.Sprintf("%.1f%%", m.BodyFatPct)
+		}
+		muscleStr := "-"
+		if m.MuscleMassKg > 0 {
+			muscleStr = fmt.Sprintf("%.1f", m.MuscleMassKg)
+		}
+		boneStr := "-"
+		if m.BoneMassKg > 0 {
+			boneStr = fmt.Sprintf("%.1f", m.BoneMassKg)
+		}
+		fmt.Printf("  %-12s %8.1f %8s %8s %8s %6s\n",
+			m.Date, m.WeightKg, fatStr, muscleStr, boneStr, body.FormatSource(m.Source))
+	}
+
+	if trend.Count > 0 {
+		fmt.Printf("\n  %s趋势:%s\n", ansi(cBold), ansi(cReset))
+		fmt.Printf("    最新:     %.1f kg\n", trend.Latest.WeightKg)
+		fmt.Printf("    平均:     %.1f kg\n", trend.WeightAvg)
+		fmt.Printf("    范围:     %.1f ~ %.1f kg\n", trend.WeightMin, trend.WeightMax)
+		if trend.Delta7Day != 0 {
+			fmt.Printf("    7天变化:  %s\n", body.FormatDelta(trend.Delta7Day))
+		}
+		if trend.Delta30Day != 0 {
+			fmt.Printf("    30天变化: %s\n", body.FormatDelta(trend.Delta30Day))
+		}
+	}
+	fmt.Println()
+}
+
+// maskMiddle masks the middle part of a string for display.
+func maskMiddle(s string) string {
+	if len(s) <= 4 {
+		return strings.Repeat("*", len(s))
+	}
+	runes := []rune(s)
+	show := 2
+	if len(runes) < 6 {
+		show = 1
+	}
+	return string(runes[:show]) + strings.Repeat("*", len(runes)-2*show) + string(runes[len(runes)-show:])
 }
 
 // ---------------------------------------------------------------------------

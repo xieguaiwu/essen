@@ -22,10 +22,26 @@ type Targets struct {
 	ProteinGoal  float64 `json:"protein_goal"`  // default 120
 }
 
+// ScaleConfig holds smart scale connection settings.
+type ScaleConfig struct {
+	Provider       string `json:"provider"`          // "xiaomi" | ""
+	XiaomiUserID   string `json:"xiaomi_user_id"`   // Mi Account email or phone
+	XiaomiPassword string `json:"xiaomi_password"`  // supports "env:VAR" ref
+}
+
+// BodyConfig holds body measurement related settings.
+type BodyConfig struct {
+	HeightCm float64    `json:"height_cm"` // used for BMR calculation
+	BirthDate string   `json:"birth_date"` // "2006-01-02", for age calculation
+	Gender    string   `json:"gender"`     // "male" | "female"
+	Scale     ScaleConfig `json:"scale"`
+}
+
 // Config is the top-level application configuration.
 type Config struct {
-	LLM     LLMConfig `json:"llm"`
-	Targets Targets   `json:"targets"`
+	LLM     LLMConfig  `json:"llm"`
+	Targets Targets    `json:"targets"`
+	Body    BodyConfig `json:"body"`
 }
 
 // ConfigPath returns the path to the configuration file: ~/.config/essen/config.json.
@@ -46,6 +62,13 @@ func DefaultConfig() Config {
 		Targets: Targets{
 			CaloriesGoal: 2500,
 			ProteinGoal:  120,
+		},
+		Body: BodyConfig{
+			HeightCm: 0,
+			Gender:   "male",
+			Scale: ScaleConfig{
+				Provider: "",
+			},
 		},
 	}
 }

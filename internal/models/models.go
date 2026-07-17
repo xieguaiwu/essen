@@ -1,5 +1,18 @@
 package models
 
+// BodyMeasurement represents a single body composition measurement
+// from a smart scale or manual entry.
+type BodyMeasurement struct {
+	Date         string  `json:"date"`           // "2006-01-02"
+	WeightKg     float64 `json:"weight_kg"`
+	BodyFatPct   float64 `json:"body_fat_pct"`
+	MuscleMassKg float64 `json:"muscle_mass_kg"`
+	BoneMassKg   float64 `json:"bone_mass_kg"`
+	WaterPct     float64 `json:"water_pct"`
+	BMRKcal      float64 `json:"bmr_kcal"`
+	Source       string  `json:"source"` // "manual" | "xiaomi"
+}
+
 // Entry represents a single food diary entry.
 type Entry struct {
 	Timestamp    string  `json:"timestamp"`
