@@ -1,0 +1,77 @@
+{
+  "go.mod": {
+    "mtime": 1783743204.1098466,
+    "ast_hash": "6df7f6de52518e1c78b2caafc4ff9c49",
+    "semantic_hash": "6df7f6de52518e1c78b2caafc4ff9c49"
+  },
+  "internal/body/body.go": {
+    "mtime": 1783862833.924183,
+    "ast_hash": "7b51ec1d0419f7eeade7d0fda3928566",
+    "semantic_hash": "7b51ec1d0419f7eeade7d0fda3928566"
+  },
+  "internal/body/xiaomi.go": {
+    "mtime": 1783862883.628533,
+    "ast_hash": "371c60a115474ed3365abf7500cf68da",
+    "semantic_hash": "371c60a115474ed3365abf7500cf68da"
+  },
+  "internal/config/config.go": {
+    "mtime": 1783862807.4119961,
+    "ast_hash": "c67a2c157dab9763a79c1a4e4bce04c6",
+    "semantic_hash": "c67a2c157dab9763a79c1a4e4bce04c6"
+  },
+  "internal/models/models.go": {
+    "mtime": 1783862801.7849565,
+    "ast_hash": "e90ae0b222ec38533ffd24492a847981",
+    "semantic_hash": "e90ae0b222ec38533ffd24492a847981"
+  },
+  "internal/nutrition/fatsecret.go": {
+    "mtime": 1783748254.2248473,
+    "ast_hash": "0382d841a036573032ffdadf75287072",
+    "semantic_hash": "0382d841a036573032ffdadf75287072"
+  },
+  "internal/nutrition/fatsecret_test.go": {
+    "mtime": 1783748265.2529633,
+    "ast_hash": "b2e20f3d19450090dd46cf6f36a419ad",
+    "semantic_hash": "b2e20f3d19450090dd46cf6f36a419ad"
+  },
+  "internal/nutrition/nutrition.go": {
+    "mtime": 1783861990.7562451,
+    "ast_hash": "8423c8a45c15a16f65d71a653b69ce16",
+    "semantic_hash": "8423c8a45c15a16f65d71a653b69ce16"
+  },
+  "internal/nutrition/openfoodfacts.go": {
+    "mtime": 1783745918.7872539,
+    "ast_hash": "2dfcfd34e0975aefd31aa0e4e79cc61a",
+    "semantic_hash": "2dfcfd34e0975aefd31aa0e4e79cc61a"
+  },
+  "internal/storage/storage.go": {
+    "mtime": 1783743706.1320238,
+    "ast_hash": "826dd93a351b61edb5748812a252fc37",
+    "semantic_hash": "826dd93a351b61edb5748812a252fc37"
+  },
+  "internal/tui/input.go": {
+    "mtime": 1783745562.9451594,
+    "ast_hash": "8c6861b7e4f27e8ad2b029b0b600c8dc",
+    "semantic_hash": "8c6861b7e4f27e8ad2b029b0b600c8dc"
+  },
+  "internal/tui/input_test.go": {
+    "mtime": 1783745103.4152539,
+    "ast_hash": "35529e0531cc1c7ad69e38ceebd293d0",
+    "semantic_hash": "35529e0531cc1c7ad69e38ceebd293d0"
+  },
+  "main.go": {
+    "mtime": 1783862964.0533032,
+    "ast_hash": "4d65eb31671e79c39b5d6c40a513714f",
+    "semantic_hash": "4d65eb31671e79c39b5d6c40a513714f"
+  },
+  "README.md": {
+    "mtime": 1783770691.6808038,
+    "ast_hash": "cc59d4458d4a0c478c4405d7eb9fc5f5",
+    "semantic_hash": "cc59d4458d4a0c478c4405d7eb9fc5f5"
+  },
+  "README.zh-CN.md": {
+    "mtime": 1783770691.6808038,
+    "ast_hash": "1f72df8a58307f6f191edfcca59f5b4c",
+    "semantic_hash": "1f72df8a58307f6f191edfcca59f5b4c"
+  }
+}

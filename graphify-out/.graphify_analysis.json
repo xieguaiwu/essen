@@ -1,0 +1,349 @@
+{
+  "communities": {
+    "0": [
+      "internal_storage_storage",
+      "internal_storage_storage_datadir",
+      "internal_storage_storage_daypath",
+      "internal_storage_storage_deleteentry",
+      "internal_storage_storage_ensuredatadir",
+      "internal_storage_storage_go_time",
+      "internal_storage_storage_loadday",
+      "internal_storage_storage_saveday",
+      "main",
+      "main_ansi",
+      "main_cmdadd",
+      "main_cmdconfig",
+      "main_cmddelete",
+      "main_cmdedit",
+      "main_cmdlist",
+      "main_cmdstats",
+      "main_cmdtoday",
+      "main_cmdweight",
+      "main_go_file",
+      "main_go_time",
+      "main_init",
+      "main_istty",
+      "main_main",
+      "main_maskapikey",
+      "main_maskmiddle",
+      "main_parsedate",
+      "main_printentrytable",
+      "main_printsummarywithtargets",
+      "main_progressbar",
+      "main_splitargs",
+      "main_splitfoodnames",
+      "main_sumentries",
+      "main_truncaterunes",
+      "main_usage",
+      "models_entry"
+    ],
+    "1": [
+      "internal_tui_input",
+      "internal_tui_input_decodeutf8bytebybyte",
+      "internal_tui_input_displaywidth",
+      "internal_tui_input_displaywidthrunes",
+      "internal_tui_input_gettermios",
+      "internal_tui_input_go_file",
+      "internal_tui_input_istty",
+      "internal_tui_input_makeraw",
+      "internal_tui_input_readescseq",
+      "internal_tui_input_readline",
+      "internal_tui_input_readlinefallback",
+      "internal_tui_input_redrawline",
+      "internal_tui_input_repositioncursor",
+      "internal_tui_input_restoretermios",
+      "internal_tui_input_runedisplaywidth",
+      "internal_tui_input_settermios",
+      "internal_tui_input_test",
+      "internal_tui_input_test_go_t",
+      "internal_tui_input_test_testdisplaywidth",
+      "internal_tui_input_test_testdisplaywidthrunes",
+      "internal_tui_input_test_testistty",
+      "internal_tui_input_test_testreadlinefallback",
+      "internal_tui_input_test_testrunedisplaywidth",
+      "internal_tui_input_test_testtermiossize",
+      "tui_escresult",
+      "tui_termios"
+    ],
+    "2": [
+      "internal_nutrition_fatsecret",
+      "internal_nutrition_fatsecret_brandmatches",
+      "internal_nutrition_fatsecret_extractfromfatsecrethtml",
+      "internal_nutrition_fatsecret_fatsecretlookup",
+      "internal_nutrition_fatsecret_foodname",
+      "internal_nutrition_fatsecret_parsefatsecretrow",
+      "internal_nutrition_fatsecret_searchfatsecret",
+      "internal_nutrition_fatsecret_test",
+      "internal_nutrition_fatsecret_test_contains",
+      "internal_nutrition_fatsecret_test_go_t",
+      "internal_nutrition_fatsecret_test_testbrandmatches",
+      "internal_nutrition_fatsecret_test_testfatsecretparsinglive",
+      "internal_nutrition_fatsecret_test_testparsefatsecretrow",
+      "internal_nutrition_fatsecret_test_testparsefatsecretrowper100g",
+      "internal_nutrition_nutrition",
+      "internal_nutrition_nutrition_extractjson",
+      "internal_nutrition_nutrition_llmlookup",
+      "internal_nutrition_nutrition_lookup",
+      "internal_nutrition_nutrition_scalefatsecretresult",
+      "internal_nutrition_openfoodfacts_extractnumber",
+      "internal_nutrition_openfoodfacts_scaleresultforamount",
+      "nutrition_chatmessage",
+      "nutrition_chatrequest",
+      "nutrition_chatresponse",
+      "nutrition_nutritionresult"
+    ],
+    "3": [
+      "readme_add_command",
+      "readme_api_key",
+      "readme_calories_goal",
+      "readme_config_command",
+      "readme_config_file_path",
+      "readme_daily_json_storage",
+      "readme_daily_storage_path",
+      "readme_document",
+      "readme_essen",
+      "readme_fatsecret_cn",
+      "readme_go_stdlib",
+      "readme_goal_progress_bars",
+      "readme_interactive_add",
+      "readme_llm_estimation",
+      "readme_openfoodfacts",
+      "readme_protein_goal",
+      "readme_real_nutrition_data",
+      "readme_smart_splitting",
+      "readme_today_command",
+      "readme_zero_external_dependencies",
+      "readme_zh-cn_document"
+    ],
+    "4": [
+      "body_trendresult",
+      "internal_body_body",
+      "internal_body_body_addmanual",
+      "internal_body_body_computetrend",
+      "internal_body_body_datadir",
+      "internal_body_body_datapath",
+      "internal_body_body_ensuredir",
+      "internal_body_body_formatdelta",
+      "internal_body_body_formatsource",
+      "internal_body_body_formatweightbar",
+      "internal_body_body_formatweightchangebar",
+      "internal_body_body_listmeasurements",
+      "internal_body_body_loadmeasurements",
+      "internal_body_body_mergemeasurements",
+      "internal_body_body_savemeasurements",
+      "internal_config_config_resolveapikey",
+      "internal_models_models",
+      "main_cmdweightlist",
+      "main_cmdweightxiaomi",
+      "models_bodymeasurement"
+    ],
+    "5": [
+      "body_xiaomiapiresponse",
+      "body_xiaomiscalerecord",
+      "body_xiaomisession",
+      "body_xiaomisession_callapi",
+      "client",
+      "internal_body_xiaomi",
+      "internal_body_xiaomi_decryptrc4",
+      "internal_body_xiaomi_encryptrc4",
+      "internal_body_xiaomi_fetchscaledata",
+      "internal_body_xiaomi_fetchxiaomi",
+      "internal_body_xiaomi_generatedeviceid",
+      "internal_body_xiaomi_generatenonce",
+      "internal_body_xiaomi_loginxiaomi",
+      "internal_body_xiaomi_min",
+      "internal_body_xiaomi_recordstomeasurements",
+      "internal_body_xiaomi_sha1hash",
+      "internal_body_xiaomi_sha1upper",
+      "internal_body_xiaomi_signrequest",
+      "internal_body_xiaomi_timestamptodate",
+      "values"
+    ],
+    "6": [
+      "internal_nutrition_openfoodfacts",
+      "internal_nutrition_openfoodfacts_buildquery",
+      "internal_nutrition_openfoodfacts_editdistance",
+      "internal_nutrition_openfoodfacts_min3",
+      "internal_nutrition_openfoodfacts_namematches",
+      "internal_nutrition_openfoodfacts_openfoodfactslookup",
+      "internal_nutrition_openfoodfacts_producttoresult",
+      "internal_nutrition_openfoodfacts_servingquantityfloat",
+      "internal_nutrition_openfoodfacts_tofloat",
+      "number",
+      "nutrition_offproduct",
+      "nutrition_offresponse"
+    ],
+    "7": [
+      "config_bodyconfig",
+      "config_config",
+      "config_llmconfig",
+      "config_scaleconfig",
+      "config_targets",
+      "internal_config_config",
+      "internal_config_config_configpath",
+      "internal_config_config_defaultconfig",
+      "internal_config_config_load",
+      "internal_config_config_save"
+    ],
+    "8": [
+      "pkg_essen"
+    ]
+  },
+  "cohesion": {
+    "0": 0.17142857142857143,
+    "1": 0.16307692307692306,
+    "2": 0.17,
+    "3": 0.11428571428571428,
+    "4": 0.20526315789473684,
+    "5": 0.18947368421052632,
+    "6": 0.3181818181818182,
+    "7": 0.4222222222222222,
+    "8": 1.0
+  },
+  "gods": [
+    {
+      "id": "main_ansi",
+      "label": "ansi()",
+      "degree": 16
+    },
+    {
+      "id": "readme_essen",
+      "label": "Essen",
+      "degree": 13
+    },
+    {
+      "id": "nutrition_nutritionresult",
+      "label": "NutritionResult",
+      "degree": 12
+    },
+    {
+      "id": "main_cmdadd",
+      "label": "cmdAdd()",
+      "degree": 12
+    },
+    {
+      "id": "internal_storage_storage_loadday",
+      "label": "LoadDay()",
+      "degree": 11
+    },
+    {
+      "id": "main_main",
+      "label": "main()",
+      "degree": 11
+    },
+    {
+      "id": "internal_tui_input_readline",
+      "label": "ReadLine()",
+      "degree": 10
+    },
+    {
+      "id": "internal_config_config_load",
+      "label": "Load()",
+      "degree": 9
+    },
+    {
+      "id": "models_bodymeasurement",
+      "label": "BodyMeasurement",
+      "degree": 9
+    },
+    {
+      "id": "internal_nutrition_nutrition_lookup",
+      "label": "Lookup()",
+      "degree": 9
+    }
+  ],
+  "surprises": [
+    {
+      "source": "cmdWeight()",
+      "target": "AddManual()",
+      "source_files": [
+        "main.go",
+        "internal/body/body.go"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "cmdWeightList()",
+      "target": "FormatSource()",
+      "source_files": [
+        "main.go",
+        "internal/body/body.go"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `FormatSource()` unexpectedly reaches hub `cmdWeightList()`"
+    },
+    {
+      "source": "cmdWeightList()",
+      "target": "FormatDelta()",
+      "source_files": [
+        "main.go",
+        "internal/body/body.go"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `FormatDelta()` unexpectedly reaches hub `cmdWeightList()`"
+    },
+    {
+      "source": "cmdWeightXiaomi()",
+      "target": "FetchXiaomi()",
+      "source_files": [
+        "main.go",
+        "internal/body/xiaomi.go"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "cmdAdd()",
+      "target": "Load()",
+      "source_files": [
+        "main.go",
+        "internal/config/config.go"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `cmdAdd()` connect `Day Data Storage` to `Terminal Input Handling`, `FatSecret Lookup`, `Configuration Management`?",
+      "why": "High betweenness centrality (0.368) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `cmdWeightXiaomi()` connect `Body Measurement Trends` to `Day Data Storage`, `Xiaomi Scale API`, `Configuration Management`?",
+      "why": "High betweenness centrality (0.232) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `ReadLine()` connect `Terminal Input Handling` to `Day Data Storage`?",
+      "why": "High betweenness centrality (0.217) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 6 inferred relationships involving `cmdAdd()` (e.g. with `Load()` and `Lookup()`) actually correct?",
+      "why": "`cmdAdd()` has 6 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 6 inferred relationships involving `LoadDay()` (e.g. with `cmdAdd()` and `cmdDelete()`) actually correct?",
+      "why": "`LoadDay()` has 6 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `essen`, `chatResponse`, `Interactive Add` to the rest of the system?",
+      "why": "12 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Essen Config & Storage` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.11428571428571428 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
